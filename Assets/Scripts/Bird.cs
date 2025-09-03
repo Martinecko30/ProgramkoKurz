@@ -15,7 +15,7 @@ public class Bird : MonoBehaviour
     [SerializeField] private PillairSpawner pillairSpawner;
 
     [SerializeField] private TMP_Text scoreText;
-    private int score = 0;
+    public int Score = 0;
     
     private bool collided = false;
     
@@ -26,7 +26,7 @@ public class Bird : MonoBehaviour
         floorOffset = floor.position;
         cameraOffset = camera.position;
         
-        scoreText.text = score.ToString();
+        scoreText.text = Score.ToString();
     }
     
     void Update()
@@ -56,9 +56,13 @@ public class Bird : MonoBehaviour
     // Spawn new Pillair and modify score
     private void OnTriggerEnter(Collider other)
     {
-        pillairSpawner.SpawnPillair(transform.position);
+        pillairSpawner.SpawnPillair();
         
-        score++;
-        scoreText.text = score.ToString();
+        Score++;
+        scoreText.text = Score.ToString();
+        
+        // Save high score
+        if (Score > PlayerPrefs.GetInt("HighScore"))
+            PlayerPrefs.SetInt("HighScore", Score);
     }
 }

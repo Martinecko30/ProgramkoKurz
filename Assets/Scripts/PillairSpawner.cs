@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,10 +13,11 @@ public class PillairSpawner : MonoBehaviour
 
     private void Start()
     {
-        SpawnPillair(Vector3.zero);
+        SpawnPillair();
+        SpawnPillair();
     }
 
-    public void SpawnPillair(Vector3 position)
+    public Vector3 SpawnPillair()
     {
         // Removes the first spawned pillair
         // Max pillairs defines how many it can spawn before deleting first one
@@ -31,7 +34,23 @@ public class PillairSpawner : MonoBehaviour
         var randomOffset = Vector3.up * Random.Range(-0.5f, 0.5f); // Preferred way
         
         // Instantiates new one and adds it to list
-        var newPillair = Instantiate(pillair, position + offset + randomOffset, Quaternion.identity);
+        var lastPillairPos = pillairs.Count > 0 ? pillairs.Last().transform.position : Vector3.zero;
+        var newPillair = Instantiate(pillair, lastPillairPos + offset + randomOffset, Quaternion.identity);
         pillairs.Add(newPillair);
+        
+        return newPillair.transform.position;
+    }
+
+    public void ClearAllPillairs()
+    {
+        // This might be easier to understand for beginners
+        /*
+        foreach (var pillairObj in pillairs)
+        {
+            Destroy(pillairObj);
+        }
+        */
+        pillairs.ForEach(Destroy);
+        pillairs.Clear();
     }
 }
